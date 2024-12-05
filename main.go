@@ -3,103 +3,185 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
-	choices  []string         // items on the to-do list
-	cursor   int              // which to-do list item our cursor is pointing at
-	selected map[int]struct{} // which to-do items are selected
+	date     time.Time
+	selected bool
+}
+
+type Month []Week
+type Week [7]int
+
+func (week Week) firstDay() int {
+	for _, day := range week {
+		if day != 0 {
+			return day
+		}
+	}
+	return 0
+}
+
+func (week Week) lastDay() int {
+	for i := 6; i >= 0; i-- {
+		if week[i] != 0 {
+			return week[i]
+		}
+	}
+	return 0
+}
+
+func (m model) week() int {
+	firstDay := time.Date(m.date.Year(), m.date.Month(), 1, 0, 0, 0, 0, time.UTC)
+	firstWeekday := firstDay.Weekday()
+	if firstWeekday == 0 {
+		firstWeekday = 7
+	}
+	return (m.date.Day() + int(firstWeekday-2)) / 7
+}
+
+func daysInMonth(year int, month time.Month) int {
+	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()
+}
+
+func firstDayOfMonth(year int, month time.Month) int {
+	return (int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday()) + 6) % 7
+	// TODO: this return is work when week start from Sunday, so we can easy implement it
+	// return int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday())
 }
 
 func initialModel() model {
 	return model{
-		// Our to-do list is a grocery list
-		choices: []string{"Buy carrots", "Buy celery", "Buy kohlrabi"},
-
-		// A map which indicates which choices are selected. We're using
-		// the  map like a mathematical set. The keys refer to the indexes
-		// of the `choices` slice, above.
-		selected: make(map[int]struct{}),
+		date:     time.Now(),
+		selected: false,
 	}
 }
 
 func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
 	return nil
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
-	// Is it a key press?
 	case tea.KeyMsg:
-
-		// Cool, what was the actual key pressed?
 		switch msg.String() {
-
-		// These keys should exit the program.
 		case "ctrl+c", "q":
 			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		// The "down" and "j" keys move the cursor down
+		case "left", "h":
+			m.date = m.date.AddDate(0, 0, -1)
+		case "right", "l":
+			m.date = m.date.AddDate(0, 0, 1)
 		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
+			m.date = m.date.AddDate(0, 0, 7)
+		case "up", "k":
+			m.date = m.date.AddDate(0, 0, -7)
+		case "^", "H":
+			d := m.date.Day() - m.monthMap()[m.week()].firstDay()
+			m.date = m.date.AddDate(0, 0, -d)
+		case "$", "L":
+			d := m.monthMap()[m.week()].lastDay() - m.date.Day()
+			m.date = m.date.AddDate(0, 0, d)
+		case "g", "J":
+			m.date = time.Date(m.date.Year(), m.date.Month(), 1, 0, 0, 0, 0, time.UTC)
+		case "G":
+			m.date = time.Date(m.date.Year(), m.date.Month(), daysInMonth(m.date.Year(), m.date.Month()), 0, 0, 0, 0, time.UTC)
+		case "enter":
+			m.selected = true
+			return m, tea.Quit
 		}
 	}
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
 	return m, nil
 }
 
 func (m model) View() string {
-	// The header
-	s := "What should we buy at the market?\n\n"
-
-	// Iterate over our choices
-	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
-
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
+	if m.selected {
+		return fmt.Sprintf("%d/%02d/%02d\n", m.date.Year(), int(m.date.Month()), m.date.Day())
 	}
 
-	// The footer
-	s += "\nPress q to quit.\n"
+	var legend = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("5"))
+	s := legend.Render(fmt.Sprintf("   %s %d", m.date.Month(), m.date.Year()))
+	s += "\n"
+	s += legend.Render("Mo Tu We Th Fr Sa Su")
+	s += "\n"
 
-	// Send the UI for rendering
+	var normal = lipgloss.NewStyle()
+	var selectedStyle = lipgloss.NewStyle().
+		Background(lipgloss.Color("15")).
+		Foreground(lipgloss.Color("0"))
+
+	var weekend = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("4"))
+
+	for _, week := range m.monthMap() {
+		for k, day := range week {
+			if day == 0 {
+				s += "   "
+			} else {
+				if day == m.date.Day() {
+					s += selectedStyle.Render(fmt.Sprintf("%2d ", day))
+				} else if k >= 5 {
+					s += weekend.Render(fmt.Sprintf("%2d ", day))
+				} else {
+					s += normal.Render(fmt.Sprintf("%2d ", day))
+				}
+			}
+		}
+		s += "\n"
+	}
+
+	currentWeekMap := m.monthMap()[m.week()]
+	left := currentWeekMap[0]
+	right := currentWeekMap[6]
+	s += "\n"
+	s += normal.Render(fmt.Sprintf("day: %d\n", m.date.Day()))
+	s += normal.Render(fmt.Sprintf("left: %d\n", left))
+	s += normal.Render(fmt.Sprintf("right: %d\n", right))
+	s += normal.Render(fmt.Sprintf("week: %d\n", m.week()))
+
 	return s
+}
+
+func (m model) monthMap() Month {
+	daysInMonth := daysInMonth(m.date.Year(), m.date.Month())
+	startDay := firstDayOfMonth(m.date.Year(), m.date.Month())
+
+	monthMap := make(Month, 0)
+	week := Week{}
+	dayCounter := 1
+
+	// Fill the first week with leading zeros
+	for i := 0; i < startDay; i++ {
+		week[i] = 0
+	}
+
+	// Fill the days of the month
+	for dayCounter <= daysInMonth {
+		week[startDay] = dayCounter
+		dayCounter++
+		startDay++
+
+		// If the week is full, add it to the weeks slice and reset
+		if startDay == 7 {
+			monthMap = append(monthMap, week)
+			week = Week{}
+			startDay = 0
+		}
+	}
+
+	// Add the last week if it has any days
+	if startDay > 0 {
+		monthMap = append(monthMap, week)
+	}
+
+	return monthMap
 }
 
 func main() {
