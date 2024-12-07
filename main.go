@@ -112,34 +112,35 @@ func (m model) View() string {
 	s += legend.Render("Mo Tu We Th Fr Sa Su")
 	s += "\n"
 
-	var style = lipgloss.NewStyle()
-
 	for _, week := range m.monthMap() {
 		for k, day := range week {
-			focused := day == m.date.Day()
-			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 			if day == 0 {
 				s += "   "
 			} else {
-				if focused {
-					if today {
-						s += style.Background(lipgloss.Color("9")).
-							Foreground(lipgloss.Color("0")).
-							Render(fmt.Sprintf("%2d ", day))
+				focused := day == m.date.Day()
+				today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
+				var style = lipgloss.NewStyle()
+
+				if today {
+					if focused {
+						style = style.Background(lipgloss.Color("9")).Foreground(lipgloss.Color("0"))
 					} else {
-						s += style.Background(lipgloss.Color("15")).
-							Foreground(lipgloss.Color("0")).
-							Render(fmt.Sprintf("%2d ", day))
+						style = style.Foreground(lipgloss.Color("9"))
 					}
-				} else if today {
-					s += style.Foreground(lipgloss.Color("9")).
-						Render(fmt.Sprintf("%2d ", day))
 				} else if k >= 5 {
-					s += style.Foreground(lipgloss.Color("4")).
-						Render(fmt.Sprintf("%2d ", day))
+					if focused {
+						style = style.Background(lipgloss.Color("4")).Foreground(lipgloss.Color("0"))
+					} else {
+						style = style.Foreground(lipgloss.Color("4"))
+					}
 				} else {
-					s += style.Render(fmt.Sprintf("%2d ", day))
+					if focused {
+						style = style.Background(lipgloss.Color("15")).Foreground(lipgloss.Color("0"))
+					} else {
+						style = style.Foreground(lipgloss.Color("15"))
+					}
 				}
+				s += style.Render(fmt.Sprintf("%2d ", day))
 			}
 		}
 
@@ -150,10 +151,10 @@ func (m model) View() string {
 	left := currentWeekMap[0]
 	right := currentWeekMap[6]
 	s += "\n"
-	s += style.Render(fmt.Sprintf("day: %d\n", m.date.Day()))
-	s += style.Render(fmt.Sprintf("left: %d\n", left))
-	s += style.Render(fmt.Sprintf("right: %d\n", right))
-	s += style.Render(fmt.Sprintf("week: %d\n", m.week()))
+	s += lipgloss.NewStyle().Render(fmt.Sprintf("day: %d\n", m.date.Day()))
+	s += lipgloss.NewStyle().Render(fmt.Sprintf("left: %d\n", left))
+	s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
+	s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
 
 	return s
 }
