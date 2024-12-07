@@ -114,40 +114,35 @@ func (m model) View() string {
 
 	var style = lipgloss.NewStyle()
 
-	var selectedStyle = style.
-		Background(lipgloss.Color("15")).
-		Foreground(lipgloss.Color("0"))
-
-	var weekend = style.
-		Foreground(lipgloss.Color("4"))
-
-	var todayR = style.
-		Foreground(lipgloss.Color("9"))
-
 	for _, week := range m.monthMap() {
 		for k, day := range week {
+			focused := day == m.date.Day()
+			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 			if day == 0 {
 				s += "   "
 			} else {
-				today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
-				if day == m.date.Day() {
+				if focused {
 					if today {
-						s += style.
-							Background(lipgloss.Color("9")).
+						s += style.Background(lipgloss.Color("9")).
 							Foreground(lipgloss.Color("0")).
 							Render(fmt.Sprintf("%2d ", day))
 					} else {
-						s += selectedStyle.Render(fmt.Sprintf("%2d ", day))
+						s += style.Background(lipgloss.Color("15")).
+							Foreground(lipgloss.Color("0")).
+							Render(fmt.Sprintf("%2d ", day))
 					}
 				} else if today {
-					s += todayR.Render(fmt.Sprintf("%2d ", day))
+					s += style.Foreground(lipgloss.Color("9")).
+						Render(fmt.Sprintf("%2d ", day))
 				} else if k >= 5 {
-					s += weekend.Render(fmt.Sprintf("%2d ", day))
+					s += style.Foreground(lipgloss.Color("4")).
+						Render(fmt.Sprintf("%2d ", day))
 				} else {
 					s += style.Render(fmt.Sprintf("%2d ", day))
 				}
 			}
 		}
+
 		s += "\n"
 	}
 
