@@ -1,0 +1,11 @@
+- [ ] Show today, style
+- [ ] Month jump (mp, mn, m[1-12]<cr>)
+- [ ] Month list (M)
+- [ ] Year jump (yp, yn)
+- [ ] Year list (Y)
+- [ ] Jump in line: 3l - 3 days later
+- [ ] Jump lines: 2j - 2 weeks later
+- [ ] Show 3 month view
+- [ ] Show full year view
+- [ ] Toggle week start, monday or sunday
+

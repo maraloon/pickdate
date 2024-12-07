@@ -120,13 +120,26 @@ func (m model) View() string {
 	var weekend = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("4"))
 
+	var todayR = lipgloss.NewStyle().
+		Foreground(lipgloss.Color("9"))
+
 	for _, week := range m.monthMap() {
 		for k, day := range week {
 			if day == 0 {
 				s += "   "
 			} else {
+				today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 				if day == m.date.Day() {
-					s += selectedStyle.Render(fmt.Sprintf("%2d ", day))
+					if today {
+						s += lipgloss.NewStyle().
+							Background(lipgloss.Color("9")).
+							Foreground(lipgloss.Color("0")).
+							Render(fmt.Sprintf("%2d ", day))
+					} else {
+						s += selectedStyle.Render(fmt.Sprintf("%2d ", day))
+					}
+				} else if today {
+					s += todayR.Render(fmt.Sprintf("%2d ", day))
 				} else if k >= 5 {
 					s += weekend.Render(fmt.Sprintf("%2d ", day))
 				} else {
