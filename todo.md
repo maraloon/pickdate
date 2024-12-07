@@ -1,4 +1,4 @@
-- [ ] Show today, style
+- [x] Show today, style
 - [ ] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
 - [ ] Year jump (yp, yn)

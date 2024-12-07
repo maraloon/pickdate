@@ -116,32 +116,34 @@ func (m model) View() string {
 		for k, day := range week {
 			if day == 0 {
 				s += "   "
-			} else {
-				focused := day == m.date.Day()
-				today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
-				var style = lipgloss.NewStyle()
-
-				if today {
-					if focused {
-						style = style.Background(lipgloss.Color("9")).Foreground(lipgloss.Color("0"))
-					} else {
-						style = style.Foreground(lipgloss.Color("9"))
-					}
-				} else if k >= 5 {
-					if focused {
-						style = style.Background(lipgloss.Color("4")).Foreground(lipgloss.Color("0"))
-					} else {
-						style = style.Foreground(lipgloss.Color("4"))
-					}
-				} else {
-					if focused {
-						style = style.Background(lipgloss.Color("15")).Foreground(lipgloss.Color("0"))
-					} else {
-						style = style.Foreground(lipgloss.Color("15"))
-					}
-				}
-				s += style.Render(fmt.Sprintf("%2d ", day))
+				break
 			}
+
+			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
+			weekend := k >= 5
+			focused := day == m.date.Day()
+			var style = lipgloss.NewStyle()
+
+			if today {
+				if focused {
+					style = style.Background(lipgloss.Color("9")).Foreground(lipgloss.Color("0"))
+				} else {
+					style = style.Foreground(lipgloss.Color("9"))
+				}
+			} else if weekend {
+				if focused {
+					style = style.Background(lipgloss.Color("4")).Foreground(lipgloss.Color("0"))
+				} else {
+					style = style.Foreground(lipgloss.Color("4"))
+				}
+			} else {
+				if focused {
+					style = style.Background(lipgloss.Color("15")).Foreground(lipgloss.Color("0"))
+				} else {
+					style = style.Foreground(lipgloss.Color("15"))
+				}
+			}
+			s += style.Render(fmt.Sprintf("%2d ", day))
 		}
 
 		s += "\n"
