@@ -112,15 +112,16 @@ func (m model) View() string {
 	s += legend.Render("Mo Tu We Th Fr Sa Su")
 	s += "\n"
 
-	var normal = lipgloss.NewStyle()
-	var selectedStyle = lipgloss.NewStyle().
+	var style = lipgloss.NewStyle()
+
+	var selectedStyle = style.
 		Background(lipgloss.Color("15")).
 		Foreground(lipgloss.Color("0"))
 
-	var weekend = lipgloss.NewStyle().
+	var weekend = style.
 		Foreground(lipgloss.Color("4"))
 
-	var todayR = lipgloss.NewStyle().
+	var todayR = style.
 		Foreground(lipgloss.Color("9"))
 
 	for _, week := range m.monthMap() {
@@ -131,7 +132,7 @@ func (m model) View() string {
 				today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 				if day == m.date.Day() {
 					if today {
-						s += lipgloss.NewStyle().
+						s += style.
 							Background(lipgloss.Color("9")).
 							Foreground(lipgloss.Color("0")).
 							Render(fmt.Sprintf("%2d ", day))
@@ -143,7 +144,7 @@ func (m model) View() string {
 				} else if k >= 5 {
 					s += weekend.Render(fmt.Sprintf("%2d ", day))
 				} else {
-					s += normal.Render(fmt.Sprintf("%2d ", day))
+					s += style.Render(fmt.Sprintf("%2d ", day))
 				}
 			}
 		}
@@ -154,10 +155,10 @@ func (m model) View() string {
 	left := currentWeekMap[0]
 	right := currentWeekMap[6]
 	s += "\n"
-	s += normal.Render(fmt.Sprintf("day: %d\n", m.date.Day()))
-	s += normal.Render(fmt.Sprintf("left: %d\n", left))
-	s += normal.Render(fmt.Sprintf("right: %d\n", right))
-	s += normal.Render(fmt.Sprintf("week: %d\n", m.week()))
+	s += style.Render(fmt.Sprintf("day: %d\n", m.date.Day()))
+	s += style.Render(fmt.Sprintf("left: %d\n", left))
+	s += style.Render(fmt.Sprintf("right: %d\n", right))
+	s += style.Render(fmt.Sprintf("week: %d\n", m.week()))
 
 	return s
 }
