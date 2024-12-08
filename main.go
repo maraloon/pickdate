@@ -116,7 +116,7 @@ func (m model) View() string {
 		for k, day := range week {
 			if day == 0 {
 				s += "   "
-				break
+				continue
 			}
 
 			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
