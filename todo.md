@@ -1,4 +1,5 @@
 - [x] Show today, style
+- [ ] Jump to today
 - [ ] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
 - [ ] Year jump (yp, yn)
@@ -8,4 +9,8 @@
 - [ ] Show 3 month view
 - [ ] Show full year view
 - [ ] Toggle week start, monday or sunday
+- [ ] Config file
+    - [ ] Week first day
+    - [ ] Output date format 
+    - [ ] File name
 

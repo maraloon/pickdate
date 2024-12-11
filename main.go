@@ -101,7 +101,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	if m.selected {
-		return fmt.Sprintf("%d/%02d/%02d\n", m.date.Year(), int(m.date.Month()), m.date.Day())
+		output := fmt.Sprintf("%d/%02d/%02d\n", m.date.Year(), int(m.date.Month()), m.date.Day())
+
+		tmpFile, err := os.Create("/tmp/tui-datepicker-output.txt")
+		if err != nil {
+			return fmt.Sprintf("Error creating file: %v\n", err)
+		}
+		defer tmpFile.Close()
+
+		_, err = tmpFile.WriteString(output)
+		if err != nil {
+			return fmt.Sprintf("Error writing to file: %v\n", err)
+		}
+
+		return output
 	}
 
 	var legend = lipgloss.NewStyle().
