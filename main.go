@@ -151,9 +151,9 @@ func (m model) View() string {
 				}
 			} else {
 				if focused {
-					style = style.Background(lipgloss.Color("15")).Foreground(lipgloss.Color("0"))
+					style = style.Background(lipgloss.Color("3")).Foreground(lipgloss.Color("0"))
 				} else {
-					style = style.Foreground(lipgloss.Color("15"))
+					style = style.Foreground(lipgloss.Color("3"))
 				}
 			}
 			s += style.Render(fmt.Sprintf("%2d ", day))
@@ -162,14 +162,14 @@ func (m model) View() string {
 		s += "\n"
 	}
 
-	currentWeekMap := m.monthMap()[m.week()]
-	left := currentWeekMap[0]
-	right := currentWeekMap[6]
-	s += "\n"
-	s += lipgloss.NewStyle().Render(fmt.Sprintf("day: %d\n", m.date.Day()))
-	s += lipgloss.NewStyle().Render(fmt.Sprintf("left: %d\n", left))
-	s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
-	s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
+	// currentWeekMap := m.monthMap()[m.week()]
+	// left := currentWeekMap[0]
+	// right := currentWeekMap[6]
+	// s += "\n"
+	// s += lipgloss.NewStyle().Render(fmt.Sprintf("day: %d\n", m.date.Day()))
+	// s += lipgloss.NewStyle().Render(fmt.Sprintf("left: %d\n", left))
+	// s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
+	// s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
 
 	return s
 }
