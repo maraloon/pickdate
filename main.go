@@ -7,6 +7,11 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"golang.org/x/term"
+)
+
+var (
+	windowStyle = lipgloss.NewStyle().Padding(2, 0).Align(lipgloss.Center).Border(lipgloss.NormalBorder()).UnsetBorderTop()
 )
 
 type model struct {
@@ -117,15 +122,15 @@ func (m model) View() string {
 		return output
 	}
 
-	var legend = lipgloss.NewStyle().
+	s := lipgloss.NewStyle().
 		Bold(true).
-		Foreground(lipgloss.Color("5"))
-	s := legend.Render(fmt.Sprintf("   %s %d", m.date.Month(), m.date.Year()))
-	s += "\n"
-	s += legend.Render("Mo Tu We Th Fr Sa Su")
-	s += "\n"
+		Foreground(lipgloss.Color("5")).
+		Render(
+			fmt.Sprintf("   %s %d", m.date.Month(), m.date.Year())+"\nMo Tu We Th Fr Sa Su",
+		) + "\n"
 
-	for _, week := range m.monthMap() {
+	monthMap := m.monthMap()
+	for _, week := range monthMap {
 		for k, day := range week {
 			if day == 0 {
 				s += "   "
@@ -162,6 +167,12 @@ func (m model) View() string {
 		s += "\n"
 	}
 
+	if len(monthMap) == 4 {
+		s += "\n\n"
+	} else if len(monthMap) == 5 {
+		s += "\n"
+	}
+
 	// currentWeekMap := m.monthMap()[m.week()]
 	// left := currentWeekMap[0]
 	// right := currentWeekMap[6]
@@ -171,7 +182,8 @@ func (m model) View() string {
 	// s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
 	// s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
 
-	return s
+	w, h, _ := term.GetSize(int(os.Stdout.Fd()))
+	return lipgloss.Place(w, h, lipgloss.Center, lipgloss.Center, s)
 }
 
 func (m model) monthMap() Month {

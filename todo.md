@@ -8,6 +8,8 @@
 - [ ] Jump lines: 2j - 2 weeks later
 - [ ] Show 3 month view
 - [ ] Show full year view
+- [ ] Toggle fullsceen (WithAltScreen)
+- [ ] Center align
 - [ ] Toggle week start, monday or sunday
 - [ ] Config file
     - [ ] Week first day
