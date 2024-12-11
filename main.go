@@ -10,10 +10,6 @@ import (
 	"golang.org/x/term"
 )
 
-var (
-	windowStyle = lipgloss.NewStyle().Padding(2, 0).Align(lipgloss.Center).Border(lipgloss.NormalBorder()).UnsetBorderTop()
-)
-
 type model struct {
 	date     time.Time
 	selected bool
@@ -77,6 +73,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		case "t":
+			m.date = time.Now()
 		case "left", "h":
 			m.date = m.date.AddDate(0, 0, -1)
 		case "right", "l":
