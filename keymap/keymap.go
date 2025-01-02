@@ -18,6 +18,8 @@ type KeyMap struct {
 	MonthEnd   key.Binding
 	MonthPrev  key.Binding
 	MonthNext  key.Binding
+	YearPrev   key.Binding
+	YearNext   key.Binding
 	Select     key.Binding
 }
 
@@ -29,7 +31,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Up, k.Down, k.Left, k.Right},
 		{k.MonthStart, k.MonthEnd, k.WeekStart, k.WeekEnd},
-		{k.MonthPrev, k.MonthNext},
+		{k.MonthPrev, k.MonthNext, k.YearPrev, k.YearNext},
 		{k.Select, k.Help, k.Quit},
 	}
 }
@@ -86,6 +88,14 @@ var Keys = KeyMap{
 	MonthNext: key.NewBinding(
 		key.WithKeys("n"),
 		key.WithHelp("n", "next month"),
+	),
+	YearPrev: key.NewBinding(
+		key.WithKeys("P"),
+		key.WithHelp("P", "prev year"),
+	),
+	YearNext: key.NewBinding(
+		key.WithKeys("N"),
+		key.WithHelp("N", "next year"),
 	),
 	Select: key.NewBinding(
 		key.WithKeys("enter"),

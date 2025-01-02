@@ -3,7 +3,7 @@
 - [x] Help menu
 - [x] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
-- [ ] Year jump (yp, yn)
+- [x] Year jump (yp, yn)
 - [ ] Year list (Y)
 - [ ] Jump in line: 3l - 3 days later
 - [ ] Jump  n month up/down: 3ml/3m<down> - 3 month down 
