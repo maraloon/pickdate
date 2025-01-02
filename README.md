@@ -3,7 +3,7 @@
 fastly select date and copy to buffer
 > WIP but work enough. See `todo.md` for planning functional
 
-![showcase](./preview.png) 
+![showcase](readme/preview.png) 
 
 ## Install
 
@@ -21,6 +21,8 @@ It's for what i develop this app. Terminal-based notes. Open (or create) file fo
 tui-datepicker
 nvim "$HOME/diary/$(wl-paste).md" # opens smth like ~/diary/2025/01/15.md
 ```
+
+![usage](readme/usage.gif) 
 
 ## Made with
 
