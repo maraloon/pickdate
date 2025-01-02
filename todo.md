@@ -1,18 +1,18 @@
 - [x] Show today, style
-- [ ] Jump to today
+- [x] Jump to today
 - [ ] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
 - [ ] Year jump (yp, yn)
 - [ ] Year list (Y)
 - [ ] Jump in line: 3l - 3 days later
+- [ ] Jump  n month up/down: 3ml/3m<down> - 3 month down 
 - [ ] Jump lines: 2j - 2 weeks later
 - [ ] Show 3 month view
 - [ ] Show full year view
 - [ ] Toggle fullsceen (WithAltScreen)
-- [ ] Center align
+- [x] Center align
 - [ ] Toggle week start, monday or sunday
 - [ ] Config file
     - [ ] Week first day
     - [ ] Output date format 
-    - [ ] File name
 
