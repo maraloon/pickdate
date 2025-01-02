@@ -125,6 +125,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	if m.selected {
 		output := fmt.Sprintf("%d/%02d/%02d\n", m.date.Year(), int(m.date.Month()), m.date.Day())
+
+        // TODO: if (x11)...
+		termenv.CopyPrimary(output)
 		termenv.Copy(output)
 		return output
 	}
