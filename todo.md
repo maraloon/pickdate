@@ -1,7 +1,7 @@
 - [x] Show today, style
 - [x] Jump to today
 - [x] Help menu
-- [ ] Month jump (mp, mn, m[1-12]<cr>)
+- [x] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
 - [ ] Year jump (yp, yn)
 - [ ] Year list (Y)

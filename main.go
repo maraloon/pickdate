@@ -105,6 +105,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.date = time.Date(m.date.Year(), m.date.Month(), 1, 0, 0, 0, 0, time.UTC)
 		case key.Matches(msg, m.keys.MonthEnd):
 			m.date = time.Date(m.date.Year(), m.date.Month(), daysInMonth(m.date.Year(), m.date.Month()), 0, 0, 0, 0, time.UTC)
+		case key.Matches(msg, m.keys.MonthPrev):
+			m.date = m.date.AddDate(0, -1, 0)
+		case key.Matches(msg, m.keys.MonthNext):
+			m.date = m.date.AddDate(0, 1, 0)
 		case key.Matches(msg, m.keys.Select):
 			m.selected = true
 			return m, tea.Quit
