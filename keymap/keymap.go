@@ -32,7 +32,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 		{k.Up, k.Down, k.Left, k.Right},
 		{k.MonthStart, k.MonthEnd, k.WeekStart, k.WeekEnd},
 		{k.MonthPrev, k.MonthNext, k.YearPrev, k.YearNext},
-		{k.Select, k.Help, k.Quit},
+		{k.Today, k.Select, k.Help, k.Quit},
 	}
 }
 
