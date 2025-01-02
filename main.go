@@ -5,15 +5,98 @@ import (
 	"os"
 	"time"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
 	"golang.org/x/term"
 )
 
+type keyMap struct {
+	Quit       key.Binding
+	Help       key.Binding
+	Up         key.Binding
+	Down       key.Binding
+	Left       key.Binding
+	Right      key.Binding
+	Today      key.Binding
+	WeekStart  key.Binding
+	WeekEnd    key.Binding
+	MonthStart key.Binding
+	MonthEnd   key.Binding
+	Select     key.Binding
+}
+
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Help}
+}
+
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.Up, k.Down, k.Left, k.Right},
+		{k.MonthStart, k.MonthEnd, k.WeekStart, k.WeekEnd},
+		{k.Select, k.Help, k.Quit},
+	}
+}
+
+var keys = keyMap{
+	Quit: key.NewBinding(
+		key.WithKeys("q", "esc", "ctrl+c"),
+		key.WithHelp("q/esc/ctrl-c", "quit"),
+	),
+	Help: key.NewBinding(
+		key.WithKeys("?"),
+		key.WithHelp("?", "help"),
+	),
+	Up: key.NewBinding(
+		key.WithKeys("up", "k"),
+		key.WithHelp("k/↑", "up"),
+	),
+	Down: key.NewBinding(
+		key.WithKeys("down", "j"),
+		key.WithHelp("j/↓", "down"),
+	),
+	Left: key.NewBinding(
+		key.WithKeys("left", "h"),
+		key.WithHelp("h/←", "left"),
+	),
+	Right: key.NewBinding(
+		key.WithKeys("right", "l"),
+		key.WithHelp("l/→", "right"),
+	),
+	Today: key.NewBinding(
+		key.WithKeys("t"),
+		key.WithHelp("t", "today"),
+	),
+	WeekStart: key.NewBinding(
+		key.WithKeys("H", "^"),
+		key.WithHelp("H/^", "week start"),
+	),
+	WeekEnd: key.NewBinding(
+		key.WithKeys("L", "$"),
+		key.WithHelp("L/$", "week end"),
+	),
+	MonthStart: key.NewBinding(
+		key.WithKeys("K", "g"),
+		key.WithHelp("K/g", "month start"),
+	),
+	MonthEnd: key.NewBinding(
+		key.WithKeys("J", "G"),
+		key.WithHelp("J/G", "month end"),
+	),
+	Select: key.NewBinding(
+		key.WithKeys("enter"),
+		key.WithHelp("enter", "select (copy to buffer)"),
+	),
+}
+
 type model struct {
 	date     time.Time
 	selected bool
+
+	keys keyMap
+	help help.Model
 }
 
 type Month []Week
@@ -60,6 +143,9 @@ func initialModel() model {
 	return model{
 		date:     time.Now(),
 		selected: false,
+
+		keys: keys,
+		help: help.New(),
 	}
 }
 
@@ -71,30 +157,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
+		switch {
+		case key.Matches(msg, m.keys.Quit):
 			return m, tea.Quit
-		case "t":
+		case key.Matches(msg, m.keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
+		case key.Matches(msg, m.keys.Today):
 			m.date = time.Now()
-		case "left", "h":
+		case key.Matches(msg, m.keys.Left):
 			m.date = m.date.AddDate(0, 0, -1)
-		case "right", "l":
+		case key.Matches(msg, m.keys.Right):
 			m.date = m.date.AddDate(0, 0, 1)
-		case "down", "j":
+		case key.Matches(msg, m.keys.Down):
 			m.date = m.date.AddDate(0, 0, 7)
-		case "up", "k":
+		case key.Matches(msg, m.keys.Up):
 			m.date = m.date.AddDate(0, 0, -7)
-		case "^", "H":
+		case key.Matches(msg, m.keys.WeekStart):
 			d := m.date.Day() - m.monthMap()[m.week()].firstDay()
 			m.date = m.date.AddDate(0, 0, -d)
-		case "$", "L":
+		case key.Matches(msg, m.keys.WeekEnd):
 			d := m.monthMap()[m.week()].lastDay() - m.date.Day()
 			m.date = m.date.AddDate(0, 0, d)
-		case "g", "J":
+		case key.Matches(msg, m.keys.MonthStart):
 			m.date = time.Date(m.date.Year(), m.date.Month(), 1, 0, 0, 0, 0, time.UTC)
-		case "G":
+		case key.Matches(msg, m.keys.MonthEnd):
 			m.date = time.Date(m.date.Year(), m.date.Month(), daysInMonth(m.date.Year(), m.date.Month()), 0, 0, 0, 0, time.UTC)
-		case "enter":
+		case key.Matches(msg, m.keys.Select):
 			m.selected = true
 			return m, tea.Quit
 		}
@@ -169,6 +257,10 @@ func (m model) View() string {
 	// s += lipgloss.NewStyle().Render(fmt.Sprintf("left: %d\n", left))
 	// s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
 	// s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
+
+	helpView := m.help.View(m.keys)
+	// return helpView
+	s += helpView
 
 	w, h, _ := term.GetSize(int(os.Stdout.Fd()))
 	return lipgloss.Place(w, h, lipgloss.Center, lipgloss.Center, s)

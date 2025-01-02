@@ -1,5 +1,6 @@
 - [x] Show today, style
 - [x] Jump to today
+- [x] Help menu
 - [ ] Month jump (mp, mn, m[1-12]<cr>)
 - [ ] Month list (M)
 - [ ] Year jump (yp, yn)
@@ -12,7 +13,7 @@
 - [ ] Toggle fullsceen (WithAltScreen)
 - [x] Center align
 - [ ] Toggle week start, monday or sunday
-- [ ] Config file
+- [ ] Config file and cli opts
     - [ ] Week first day
     - [ ] Output date format 
 
