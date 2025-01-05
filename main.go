@@ -136,7 +136,7 @@ func (m model) View() string {
 		Bold(true).
 		Foreground(lipgloss.Color("5")).
 		Render(
-			fmt.Sprintf("   %s %d", m.date.Month(), m.date.Year())+"\nMo Tu We Th Fr Sa Su",
+			fmt.Sprintf("    %s %d", m.date.Month(), m.date.Year())+"\nMo Tu We Th Fr Sa Su",
 		) + "\n"
 
 	monthMap := m.monthMap()
@@ -171,7 +171,7 @@ func (m model) View() string {
 					style = style.Foreground(lipgloss.Color("3"))
 				}
 			}
-			s += style.Render(fmt.Sprintf("%2d ", day))
+			s += style.Render(fmt.Sprintf(" %2d", day))
 		}
 
 		s += "\n"

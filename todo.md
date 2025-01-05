@@ -17,3 +17,5 @@
     - [ ] Week first day
     - [ ] Output date format 
 
+Bugs:
+- [ ] copy in X11 still not work
