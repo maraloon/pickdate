@@ -1,23 +1,31 @@
 - [x] Show today, style
-- [x] Jump to today
 - [x] Help menu
-- [x] Month jump (mp, mn, m[1-12]<cr>)
-- [ ] Month list (M)
-- [x] Year jump (yp, yn)
-- [ ] Year list (Y)
-- [ ] Jump in line: 3l - 3 days later
-- [ ] Jump  n month up/down: 3ml/3m<down> - 3 month down 
-- [ ] Jump lines: 2j - 2 weeks later
-- [ ] Show 3 month view
-- [ ] Show full year view
+- [ ] Jumps
+    - [x] Jump to today
+    - [-] Month jump
+        - [x] p, n
+        - [ ] m[1-12]<cr>
+    - [-] Year jump (yp, yn)
+        - [x] P, N
+        - [ ] y[1-12]<cr>
+    - [ ] Jump in line: 3l - 3 days later
+    - [ ] Jump n month up/down: 3ml/3m<down> - 3 month down 
+    - [ ] Jump lines: 2j - 2 weeks later
+- [ ] Lists
+    - [ ] Month list (M)
+    - [ ] Year list (Y)
+- [ ] Views
+    - [ ] Show 3 month view
+    - [ ] Show full year view
 - [ ] Toggle fullsceen (WithAltScreen)
 - [x] Center align
 - [ ] Toggle week start, monday or sunday
 - [ ] Config file and cli opts
     - [ ] Week first day
     - [ ] Output date format 
+    - [ ] Fullscreen
 
 Bugs:
 - [x] remove copy to buffer and add print to stdout
-- [ ] `selected_date=$(tui-datepicker) || exit 1` must exit when presing `q`
-- [ ] not clear screen on `q`
+- [x] `selected_date=$(tui-datepicker) || exit 1` must exit when presing `q`
+- [x] not clear screen on `q`

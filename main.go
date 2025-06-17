@@ -235,5 +235,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	if (model.quit) {
+		os.Exit(130)
+	}
+
 	fmt.Print(model.output)
 }
