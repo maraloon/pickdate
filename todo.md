@@ -18,4 +18,6 @@
     - [ ] Output date format 
 
 Bugs:
-- [ ] copy in X11 still not work
+- [x] remove copy to buffer and add print to stdout
+- [ ] `selected_date=$(tui-datepicker) || exit 1` must exit when presing `q`
+- [ ] not clear screen on `q`

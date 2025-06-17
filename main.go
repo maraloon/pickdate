@@ -5,25 +5,27 @@ import (
 	"os"
 	"time"
 
+	"tui-datepicker/keymap"
+
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/termenv"
 	"golang.org/x/term"
-	"tui-datepicker/keymap"
 )
 
 type model struct {
-	date     time.Time
-	selected bool
-
-	keys keymap.KeyMap
-	help help.Model
+	date   time.Time
+	keys   keymap.KeyMap
+	help   help.Model
+	output string
+	quit bool
 }
 
-type Month []Week
-type Week [7]int
+type (
+	Month []Week
+	Week  [7]int
+)
 
 func (week Week) firstDay() int {
 	for _, day := range week {
@@ -62,26 +64,24 @@ func firstDayOfMonth(year int, month time.Month) int {
 	// return int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday())
 }
 
-func initialModel() model {
-	return model{
-		date:     time.Now(),
-		selected: false,
-
+func initialModel() *model {
+	return &model{
+		date: time.Now(),
 		keys: keymap.Keys,
 		help: help.New(),
 	}
 }
 
-func (m model) Init() tea.Cmd {
+func (m *model) Init() tea.Cmd {
 	return nil
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.Quit):
+			m.quit = true
 			return m, tea.Quit
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
@@ -114,7 +114,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.YearNext):
 			m.date = m.date.AddDate(1, 0, 0)
 		case key.Matches(msg, m.keys.Select):
-			m.selected = true
+			m.output = fmt.Sprintf("%d/%02d/%02d", m.date.Year(), int(m.date.Month()), m.date.Day())
 			return m, tea.Quit
 		}
 	}
@@ -122,14 +122,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m model) View() string {
-	if m.selected {
-		output := fmt.Sprintf("%d/%02d/%02d\n", m.date.Year(), int(m.date.Month()), m.date.Day())
-
-        // TODO: if (x11)...
-		termenv.CopyPrimary(output)
-		termenv.Copy(output)
-		return output
+func (m *model) View() string {
+	if m.output != "" || m.quit {
+		return ""
 	}
 
 	s := lipgloss.NewStyle().
@@ -150,7 +145,7 @@ func (m model) View() string {
 			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 			weekend := k >= 5
 			focused := day == m.date.Day()
-			var style = lipgloss.NewStyle()
+			style := lipgloss.NewStyle()
 
 			if today {
 				if focused {
@@ -183,22 +178,13 @@ func (m model) View() string {
 		s += "\n"
 	}
 
-	// currentWeekMap := m.monthMap()[m.week()]
-	// left := currentWeekMap[0]
-	// right := currentWeekMap[6]
-	// s += "\n"
-	// s += lipgloss.NewStyle().Render(fmt.Sprintf("day: %d\n", m.date.Day()))
-	// s += lipgloss.NewStyle().Render(fmt.Sprintf("left: %d\n", left))
-	// s += lipgloss.NewStyle().Render(fmt.Sprintf("right: %d\n", right))
-	// s += lipgloss.NewStyle().Render(fmt.Sprintf("week: %d\n", m.week()))
-
 	s += m.help.View(m.keys)
 
-	w, h, _ := term.GetSize(int(os.Stdout.Fd()))
+	w, h, _ := term.GetSize(int(os.Stderr.Fd()))
 	return lipgloss.Place(w, h, lipgloss.Center, lipgloss.Center, s)
 }
 
-func (m model) monthMap() Month {
+func (m *model) monthMap() Month {
 	daysInMonth := daysInMonth(m.date.Year(), m.date.Month())
 	startDay := firstDayOfMonth(m.date.Year(), m.date.Month())
 
@@ -207,7 +193,7 @@ func (m model) monthMap() Month {
 	dayCounter := 1
 
 	// Fill the first week with leading zeros
-	for i := 0; i < startDay; i++ {
+	for i := range startDay {
 		week[i] = 0
 	}
 
@@ -234,9 +220,20 @@ func (m model) monthMap() Month {
 }
 
 func main() {
-	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
+	lipgloss.SetDefaultRenderer(lipgloss.NewRenderer(os.Stderr))
+
+	tty, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
+	if err != nil {
+		panic(err)
+	}
+	defer tty.Close()
+
+	model := initialModel()
+	p := tea.NewProgram(model, tea.WithOutput(tty))
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
+
+	fmt.Print(model.output)
 }

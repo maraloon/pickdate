@@ -1,6 +1,6 @@
 # TUI datepicker
 
-fastly select date and copy to buffer
+fastly select date via vim-motions and print it to `stdout`
 > WIP but work enough. See `todo.md` for planning functional
 
 ![showcase](readme/preview.png) 

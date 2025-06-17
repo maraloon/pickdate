@@ -99,6 +99,6 @@ var Keys = KeyMap{
 	),
 	Select: key.NewBinding(
 		key.WithKeys("enter"),
-		key.WithHelp("enter", "select (copy to buffer)"),
+		key.WithHelp("enter", "select"),
 	),
 }
