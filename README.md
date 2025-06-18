@@ -8,6 +8,7 @@ fastly select date via vim-motions and print it to `stdout`
 
 ```bash
 git clone git@github.com:maraloon/tui-datepicker.git
+cd tui-datepicker
 go install
 ```
 
