@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -19,7 +20,12 @@ type model struct {
 	keys   keymap.KeyMap
 	help   help.Model
 	output string
-	quit bool
+	quit   bool
+	config Config
+}
+
+type Config struct {
+	firstWeekdayIsMo bool
 }
 
 type (
@@ -58,17 +64,30 @@ func daysInMonth(year int, month time.Month) int {
 	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }
 
-func firstDayOfMonth(year int, month time.Month) int {
-	return (int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday()) + 6) % 7
-	// TODO: this return is work when week start from Sunday, so we can easy implement it
-	// return int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday())
+func firstDayOfMonth(year int, month time.Month, firstWeekDayIsMonday bool) int {
+	firstDay := int(time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).Weekday())
+	if firstWeekDayIsMonday {
+		firstDay = (firstDay + 6) % 7
+	}
+	return firstDay
 }
 
-func initialModel() *model {
+func generateConfig() Config {
+	var firstWeekday string
+	flag.StringVar(&firstWeekday, "first-weekday", "mo", "Render calendar starting from selected weekday [mo/su]")
+	flag.Parse()
+
+	return Config{
+		firstWeekdayIsMo: firstWeekday == "mo",
+	}
+}
+
+func initialModel(config Config) *model {
 	return &model{
-		date: time.Now(),
-		keys: keymap.Keys,
-		help: help.New(),
+		date:   time.Now(),
+		keys:   keymap.Keys,
+		help:   help.New(),
+		config: config,
 	}
 }
 
@@ -127,11 +146,18 @@ func (m *model) View() string {
 		return ""
 	}
 
+	var weekLegend string
+	if m.config.firstWeekdayIsMo {
+		weekLegend = "Mo Tu We Th Fr Sa Su"
+	} else {
+		weekLegend = "Su Mo Tu We Th Fr Sa"
+	}
+
 	s := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("5")).
 		Render(
-			fmt.Sprintf("    %s %d", m.date.Month(), m.date.Year())+"\nMo Tu We Th Fr Sa Su",
+			fmt.Sprintf("    %s %d", m.date.Month(), m.date.Year())+"\n "+weekLegend,
 		) + "\n"
 
 	monthMap := m.monthMap()
@@ -186,7 +212,7 @@ func (m *model) View() string {
 
 func (m *model) monthMap() Month {
 	daysInMonth := daysInMonth(m.date.Year(), m.date.Month())
-	startDay := firstDayOfMonth(m.date.Year(), m.date.Month())
+	startDay := firstDayOfMonth(m.date.Year(), m.date.Month(), m.config.firstWeekdayIsMo)
 
 	monthMap := make(Month, 0)
 	week := Week{}
@@ -228,14 +254,14 @@ func main() {
 	}
 	defer tty.Close()
 
-	model := initialModel()
+	model := initialModel(generateConfig())
 	p := tea.NewProgram(model, tea.WithOutput(tty))
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
 
-	if (model.quit) {
+	if model.quit {
 		os.Exit(130)
 	}
 

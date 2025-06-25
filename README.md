@@ -49,9 +49,10 @@ nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
 - [x] Center align
 - [ ] Toggle week start, monday or sunday
 - [ ] Config file and cli opts
-    - [ ] Week first day
+    - [x] Week first day
     - [ ] Output date format 
     - [ ] Fullscreen
+- [ ] AUR
 
 ## Made with
 
