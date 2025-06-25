@@ -1,12 +1,12 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"time"
 
 	"tui-datepicker/keymap"
+	"tui-datepicker/config"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -21,11 +21,7 @@ type model struct {
 	help   help.Model
 	output string
 	quit   bool
-	config Config
-}
-
-type Config struct {
-	firstWeekdayIsMo bool
+	config config.Config
 }
 
 type (
@@ -72,17 +68,7 @@ func firstDayOfMonth(year int, month time.Month, firstWeekDayIsMonday bool) int 
 	return firstDay
 }
 
-func generateConfig() Config {
-	var firstWeekday string
-	flag.StringVar(&firstWeekday, "first-weekday", "mo", "Render calendar starting from selected weekday [mo/su]")
-	flag.Parse()
-
-	return Config{
-		firstWeekdayIsMo: firstWeekday == "mo",
-	}
-}
-
-func initialModel(config Config) *model {
+func initialModel(config config.Config) *model {
 	return &model{
 		date:   time.Now(),
 		keys:   keymap.Keys,
@@ -133,7 +119,7 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.YearNext):
 			m.date = m.date.AddDate(1, 0, 0)
 		case key.Matches(msg, m.keys.Select):
-			m.output = fmt.Sprintf("%d/%02d/%02d", m.date.Year(), int(m.date.Month()), m.date.Day())
+			m.output = m.date.Format(m.config.OutputFormat)
 			return m, tea.Quit
 		}
 	}
@@ -147,7 +133,7 @@ func (m *model) View() string {
 	}
 
 	var weekLegend string
-	if m.config.firstWeekdayIsMo {
+	if m.config.FirstWeekdayIsMo  {
 		weekLegend = "Mo Tu We Th Fr Sa Su"
 	} else {
 		weekLegend = "Su Mo Tu We Th Fr Sa"
@@ -212,7 +198,7 @@ func (m *model) View() string {
 
 func (m *model) monthMap() Month {
 	daysInMonth := daysInMonth(m.date.Year(), m.date.Month())
-	startDay := firstDayOfMonth(m.date.Year(), m.date.Month(), m.config.firstWeekdayIsMo)
+	startDay := firstDayOfMonth(m.date.Year(), m.date.Month(), m.config.FirstWeekdayIsMo )
 
 	monthMap := make(Month, 0)
 	week := Week{}
@@ -254,10 +240,17 @@ func main() {
 	}
 	defer tty.Close()
 
-	model := initialModel(generateConfig())
+	config, err := config.ValidateFlags()
+	
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		os.Exit(1)
+	}
+
+	model := initialModel(config)
 	p := tea.NewProgram(model, tea.WithOutput(tty))
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
+		fmt.Printf("Error: %v", err)
 		os.Exit(1)
 	}
 
