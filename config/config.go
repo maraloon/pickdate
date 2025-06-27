@@ -2,7 +2,10 @@ package config
 
 import (
 	"errors"
-	"flag"
+	"fmt"
+	"os"
+
+	"github.com/spf13/pflag"
 )
 
 type Config struct {
@@ -11,19 +14,33 @@ type Config struct {
 }
 
 func ValidateFlags() (Config, error) {
-	var firstWeekday string
-	flag.StringVar(&firstWeekday, "first-weekday", "mo", "Render calendar starting from selected weekday [mo/su]")
+	var sunday bool
+	var monday bool
+	pflag.BoolVarP(&sunday, "sunday", "s", true, "Sunday as first day of week")
+	pflag.BoolVarP(&monday, "monday", "m", false, "Monday as first day of week")
+	
 	var format string
-	flag.StringVar(&format, "format", "yyyy/mm/dd", "Format of date output")
-	flag.Parse()
+	pflag.StringVarP(&format, "format", "f", "yyyy/mm/dd", "Format of date output")
 
+	var help bool
+	pflag.BoolVarP(&help, "help", "h", false, "Help")
+	
+	pflag.Parse()
+	
+	if help {
+		fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS]\n\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Options:\n")
+		pflag.CommandLine.PrintDefaults()
+		os.Exit(1)
+	}
+	
 	layout, err := transformDateLayout(format)
 	if err != nil {
 		return Config{}, err
 	}
 
 	return Config{
-		FirstWeekdayIsMo: firstWeekday == "mo",
+		FirstWeekdayIsMo: monday || !sunday,
 		OutputFormat:     layout,
 	}, nil
 }

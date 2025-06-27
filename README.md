@@ -24,38 +24,42 @@ nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
 
 ![usage](readme/usage.gif) 
 
-### Flags
+## Flags
 
-also see `tui-datepicker --help`
+```
+Usage: tui-datepicker [OPTIONS]
 
-`--first-weekday`
-Render calendar starting from selected weekday (`mo` or `su`) (default "mo")
+Options:
+  -f, --format string   Format of date output (default "yyyy/mm/dd")
+  -h, --help            Help
+  -m, --monday          Monday as first day of week
+  -s, --sunday          Sunday as first day of week (default true)
+```
 
-`--format` 
-Format of date output (default "yyyy/mm/dd")
+### `--format` values
 
-You can use one of both, left and right type of format
+You can use both left and right format types
 
 
-| Format    | Go Layout     |
-|-----------|---------------|
-| yyyy/mm/dd| 2006/01/02    |
-| Y/m/d     | 2006/01/02    |
-| yyyy-mm-dd| 2006-01-02    |
-| Y-m-d     | 2006-01-02    |
-| F j, Y    | January 2, 2006|
-| m/d/y     | 01/02/06      |
-| M-d-y     | Jan-02-06     |
-| l         | Monday        |
-| D         | Mon           |
-| d         | 02            |
-| j         | 2             |
-| F         | January       |
-| M         | Jan           |
-| m         | 01            |
-| n         | 1             |
-| Y         | 2006          |
-| y         | 06            |
+|   Format     | Go Layout         |
+|--------------|-------------------|
+| `yyyy/mm/dd` | `2006/01/02`      |
+| `Y/m/d`      | `2006/01/02`      |
+| `yyyy-mm-dd` | `2006-01-02`      |
+| `Y-m-d`      | `2006-01-02`      |
+| `F j, Y`     | `January 2, 2006` |
+| `m/d/y`      | `01/02/06`        |
+| `M-d-y`      | `Jan-02-06`       |
+| `l`          | `Monday`          |
+| `D`          | `Mon`             |
+| `d`          | `02`              |
+| `j`          | `2`               |
+| `F`          | `January`         |
+| `M`          | `Jan`             |
+| `m`          | `01`              |
+| `n`          | `1`               |
+| `Y`          | `2006`            |
+| `y`          | `06`              |
 
 
 ## TODO
