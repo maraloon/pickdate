@@ -1,4 +1,4 @@
-# TUI datepicker
+# Pickdate
 
 fastly select date via vim-motions and print it to `stdout`
 
@@ -7,8 +7,8 @@ fastly select date via vim-motions and print it to `stdout`
 ## Install
 
 ```bash
-git clone git@github.com:maraloon/tui-datepicker.git
-cd tui-datepicker
+git clone git@github.com:maraloon/pickdate.git
+cd pickdate
 go install
 ```
 
@@ -18,7 +18,7 @@ It's for what i develop this app. Terminal-based notes. Open (or create) file fo
 
 ```bash
 #!/usr/bin/env sh
-selected_date=$(tui-datepicker) || exit 1
+selected_date=$(pickdate) || exit 1
 nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
 ```
 
@@ -27,7 +27,7 @@ nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
 ## Flags
 
 ```
-Usage: tui-datepicker [OPTIONS]
+Usage: pickdate [OPTIONS]
 
 Options:
   -f, --format string   Format of date output (default "yyyy/mm/dd")

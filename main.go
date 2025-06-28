@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"tui-datepicker/keymap"
-	"tui-datepicker/config"
+	"pickdate/keymap"
+	"pickdate/config"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
