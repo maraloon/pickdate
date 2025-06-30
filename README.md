@@ -6,6 +6,14 @@ fastly select date via vim-motions and print it to `stdout`
 
 ## Install
 
+### arch linux:
+
+``` bash
+yay -S install pickdate 
+```
+
+### manualy:
+
 ```bash
 git clone git@github.com:maraloon/pickdate.git
 cd pickdate
