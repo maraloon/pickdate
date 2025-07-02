@@ -156,6 +156,9 @@ func (m *model) View() string {
 
 			today := day == time.Now().Day() && m.date.Month() == time.Now().Month() && m.date.Year() == time.Now().Year()
 			weekend := k >= 5
+			if !m.config.FirstWeekdayIsMo {
+				weekend = k == 0 || k == 6
+			}
 			focused := day == m.date.Day()
 			style := lipgloss.NewStyle()
 
