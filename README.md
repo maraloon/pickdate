@@ -26,8 +26,13 @@ It's for what i develop this app. Terminal-based notes. Open (or create) file fo
 
 ```bash
 #!/usr/bin/env sh
-selected_date=$(pickdate) || exit 1
-nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
+prev_selected_date=$(date +"%Y/%m/%d")
+while true
+do 
+    selected_date=$(pickdate -m --start-at $prev_selected_date) || exit 1
+    nvim "$HOME/diary/$selected_date.md" # opens diary/2025/01/15.md
+    prev_selected_date=$selected_date # alows to stay in selected date after quit editor
+done
 ```
 
 ![usage](readme/usage.gif) 
@@ -38,10 +43,11 @@ nvim "$HOME/diary/$selected_date.md" # opens smth like ~/diary/2025/01/15.md
 Usage: pickdate [OPTIONS]
 
 Options:
-  -f, --format string   Format of date output (default "yyyy/mm/dd")
-  -h, --help            Help
-  -m, --monday          Monday as first day of week
-  -s, --sunday          Sunday as first day of week (default true)
+  -f, --format string     Format of date output (default "yyyy/mm/dd")
+  -h, --help              Help
+  -m, --monday            Monday as first day of week
+      --start-at string   Pointed date on enter (default today)
+  -s, --sunday            Sunday as first day of week (default true)
 ```
 
 ### `--format` values
@@ -79,12 +85,13 @@ You can use both left and right format types
     - [ ] Month jump
         - [x] p, n
         - [ ] m[1-12]<cr>
-    - [ ] Year jump (yp, yn)
+    - [ ] Year jump
         - [x] P, N
         - [ ] y[1-12]<cr>
     - [ ] Jump in line: 3l - 3 days later
     - [ ] Jump n month up/down: 3ml/3m<down> - 3 month down 
     - [ ] Jump lines: 2j - 2 weeks later
+    - [ ] Jump to selected day: `d[1-31]`/`31g`/`31<cr>` will jump on 31th day of current month
 - [ ] Lists
     - [ ] Month list (M)
     - [ ] Year list (Y)
@@ -97,6 +104,7 @@ You can use both left and right format types
 - [ ] CLI opts
     - [x] Week first day
     - [x] Output date format 
+    - [x] `--start-at date`
     - [ ] Fullscreen
 - [ ] AUR
 

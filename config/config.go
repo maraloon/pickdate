@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/pflag"
 )
@@ -11,22 +12,22 @@ import (
 type Config struct {
 	FirstWeekdayIsMo bool
 	OutputFormat     string
+	StartAt          time.Time
 }
 
 func ValidateFlags() (Config, error) {
+	var help bool
 	var sunday bool
 	var monday bool
+	var format string
+	var startAtF string
+	pflag.BoolVarP(&help, "help", "h", false, "Help")
 	pflag.BoolVarP(&sunday, "sunday", "s", true, "Sunday as first day of week")
 	pflag.BoolVarP(&monday, "monday", "m", false, "Monday as first day of week")
-	
-	var format string
 	pflag.StringVarP(&format, "format", "f", "yyyy/mm/dd", "Format of date output")
-
-	var help bool
-	pflag.BoolVarP(&help, "help", "h", false, "Help")
-	
+	pflag.StringVar(&startAtF, "start-at", time.Now().Format("2006/01/02"), "Pointed date on enter")
 	pflag.Parse()
-	
+
 	if help {
 		fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS]\n\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "Options:\n")
@@ -34,6 +35,11 @@ func ValidateFlags() (Config, error) {
 		os.Exit(1)
 	}
 	
+	startAt, err := time.Parse("2006/01/02", startAtF)
+	if err != nil {
+		return Config{}, err
+	}
+
 	layout, err := transformDateLayout(format)
 	if err != nil {
 		return Config{}, err
@@ -42,6 +48,7 @@ func ValidateFlags() (Config, error) {
 	return Config{
 		FirstWeekdayIsMo: monday || !sunday,
 		OutputFormat:     layout,
+		StartAt:          startAt,
 	}, nil
 }
 

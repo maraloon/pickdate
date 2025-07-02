@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"pickdate/keymap"
 	"pickdate/config"
+	"pickdate/keymap"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -70,7 +70,7 @@ func firstDayOfMonth(year int, month time.Month, firstWeekDayIsMonday bool) int 
 
 func initialModel(config config.Config) *model {
 	return &model{
-		date:   time.Now(),
+		date:   config.StartAt,
 		keys:   keymap.Keys,
 		help:   help.New(),
 		config: config,
@@ -133,7 +133,7 @@ func (m *model) View() string {
 	}
 
 	var weekLegend string
-	if m.config.FirstWeekdayIsMo  {
+	if m.config.FirstWeekdayIsMo {
 		weekLegend = "Mo Tu We Th Fr Sa Su"
 	} else {
 		weekLegend = "Su Mo Tu We Th Fr Sa"
@@ -198,7 +198,7 @@ func (m *model) View() string {
 
 func (m *model) monthMap() Month {
 	daysInMonth := daysInMonth(m.date.Year(), m.date.Month())
-	startDay := firstDayOfMonth(m.date.Year(), m.date.Month(), m.config.FirstWeekdayIsMo )
+	startDay := firstDayOfMonth(m.date.Year(), m.date.Month(), m.config.FirstWeekdayIsMo)
 
 	monthMap := make(Month, 0)
 	week := Week{}
@@ -241,7 +241,6 @@ func main() {
 	defer tty.Close()
 
 	config, err := config.ValidateFlags()
-	
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		os.Exit(1)
