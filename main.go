@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"pickdate/config"
-	"pickdate/keymap"
+	"github.com/maraloon/pickdate/config"
+	"github.com/maraloon/pickdate/keymap"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
