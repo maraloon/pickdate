@@ -7,6 +7,7 @@ import (
 
 	"github.com/maraloon/pickdate/config"
 	"github.com/maraloon/pickdate/keymap"
+	"github.com/maraloon/pickdate/usercolor"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -22,6 +23,7 @@ type model struct {
 	output string
 	quit   bool
 	config config.Config
+	colors usercolor.Colors
 }
 
 type (
@@ -68,12 +70,13 @@ func firstDayOfMonth(year int, month time.Month, firstWeekDayIsMonday bool) int 
 	return firstDay
 }
 
-func initialModel(config config.Config) *model {
+func initialModel(config config.Config, colors usercolor.Colors) *model {
 	return &model{
 		date:   config.StartAt,
 		keys:   keymap.Keys,
 		help:   help.New(),
 		config: config,
+		colors: colors,
 	}
 }
 
@@ -162,7 +165,15 @@ func (m *model) View() string {
 			focused := day == m.date.Day()
 			style := lipgloss.NewStyle()
 
-			if today {
+			contextTime := time.Date(m.date.Year(), m.date.Month(), day, m.date.Hour(), m.date.Minute(), m.date.Second(), m.date.Nanosecond(), m.date.Location())
+
+			if c, exists := m.colors[contextTime.Format(m.config.OutputFormat)]; exists {
+				if focused {
+					style = style.Background(lipgloss.Color("9")).Foreground(lipgloss.Color(c))
+				} else {
+					style = style.Foreground(lipgloss.Color(c))
+				}
+			} else if today {
 				if focused {
 					style = style.Background(lipgloss.Color("9")).Foreground(lipgloss.Color("0"))
 				} else {
@@ -249,7 +260,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	model := initialModel(config)
+	colors, err := usercolor.ValidateStdin()
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		os.Exit(1)
+	}
+
+	model := initialModel(config, colors)
 	p := tea.NewProgram(model, tea.WithOutput(tty))
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error: %v", err)

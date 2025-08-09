@@ -76,6 +76,15 @@ You can use both left and right format types
 | `y`          | `06`              |
 
 
+## Set custom colors for days
+
+You can send string to stdin to set custom colors for each day.
+String format: `color1:day1,day2;color2:day3,day31`
+`color` - `[0-15]` or hex (`#b16286`)
+`day` - `2006/01/02`
+
+example: `echo "#b16286:2025/08/10,2025/08/11;#d79920:2025/08/12" | pickdate`
+
 ## TODO
 
 - [x] Show today, style
@@ -95,9 +104,10 @@ You can use both left and right format types
 - [ ] Lists
     - [ ] Month list (M)
     - [ ] Year list (Y)
-- [ ] Views
+- [ ] View
     - [ ] Show 3 month view
     - [ ] Show full year view
+    - [ ] Change colors via config
 - [ ] Toggle fullsceen (WithAltScreen)
 - [x] Center align
 - [ ] Toggle week start, monday or sunday
@@ -106,7 +116,9 @@ You can use both left and right format types
     - [x] Output date format 
     - [x] `--start-at date`
     - [ ] Fullscreen
-- [ ] AUR
+- aur
+    - [x] stable
+    - [ ] git version
 
 ## Made with
 
