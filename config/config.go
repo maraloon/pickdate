@@ -34,7 +34,7 @@ func ValidateFlags() (Config, error) {
 		pflag.CommandLine.PrintDefaults()
 		os.Exit(1)
 	}
-	
+
 	startAt, err := time.Parse("2006/01/02", startAtF)
 	if err != nil {
 		return Config{}, err

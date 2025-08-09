@@ -1,4 +1,4 @@
-module pickdate
+module github.com/maraloon/pickdate
 
 go 1.23.3
 
