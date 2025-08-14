@@ -98,7 +98,7 @@ example: `echo "#b16286:2025/08/10,2025/08/11;#d79920:2025/08/12" | pickdate`
         - [x] P, N
         - [ ] y[1-12]<cr>
     - [ ] Jump in line: 3l - 3 days later
-    - [ ] Jump n month up/down: 3ml/3m<down> - 3 month down 
+    - [ ] Jump n month up/down: 3ml/3m<down> - 3 month down
     - [ ] Jump lines: 2j - 2 weeks later
     - [ ] Jump to selected day: `d[1-31]`/`31g`/`31<cr>` will jump on 31th day of current month
 - [ ] Lists
@@ -113,7 +113,7 @@ example: `echo "#b16286:2025/08/10,2025/08/11;#d79920:2025/08/12" | pickdate`
 - [ ] Toggle week start, monday or sunday
 - [ ] CLI opts
     - [x] Week first day
-    - [x] Output date format 
+    - [x] Output date format
     - [x] `--start-at date`
     - [ ] Fullscreen
 - aur
@@ -121,5 +121,7 @@ example: `echo "#b16286:2025/08/10,2025/08/11;#d79920:2025/08/12" | pickdate`
     - [ ] git version
 
 ## Made with
+
+It depends on [datepicker](https://github.com/maraloon/datepicker) bubble, which you can use in your go apps too
 
 <p><a href="https://stuff.charm.sh/bubbletea/bubbletea-4k.png"><img src="https://github.com/charmbracelet/bubbletea/assets/25087/108d4fdb-d554-4910-abed-2a5f5586a60e" width="313" alt="Bubble Tea Title Treatment"></a></p>

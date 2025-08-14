@@ -6,16 +6,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/maraloon/datepicker"
 	"github.com/spf13/pflag"
 )
 
-type Config struct {
-	FirstWeekdayIsMo bool
-	OutputFormat     string
-	StartAt          time.Time
-}
-
-func ValidateFlags() (Config, error) {
+func ValidateFlags() (datepicker.Config, error) {
 	var help bool
 	var sunday bool
 	var monday bool
@@ -37,15 +32,15 @@ func ValidateFlags() (Config, error) {
 
 	startAt, err := time.Parse("2006/01/02", startAtF)
 	if err != nil {
-		return Config{}, err
+		return datepicker.Config{}, err
 	}
 
 	layout, err := transformDateLayout(format)
 	if err != nil {
-		return Config{}, err
+		return datepicker.Config{}, err
 	}
 
-	return Config{
+	return datepicker.Config{
 		FirstWeekdayIsMo: monday || !sunday,
 		OutputFormat:     layout,
 		StartAt:          startAt,

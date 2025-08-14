@@ -3,6 +3,7 @@ module github.com/maraloon/pickdate
 go 1.23.3
 
 require github.com/charmbracelet/bubbles v0.20.0
+require github.com/maraloon/datepicker v0.0.2
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
