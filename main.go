@@ -74,14 +74,6 @@ func (m mainModel) View() string {
 }
 
 func main() {
-	lipgloss.SetDefaultRenderer(lipgloss.NewRenderer(os.Stderr))
-
-	tty, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
-	if err != nil {
-		panic(err)
-	}
-	defer tty.Close()
-
 	config, err := config.ValidateFlags()
 	if err != nil {
 		fmt.Printf("Error: %v", err)
@@ -97,7 +89,7 @@ func main() {
 
 	cal := datepicker.InitModel(config, colors)
 	model := InitModel(cal)
-	p := tea.NewProgram(model, tea.WithOutput(tty))
+	p := tea.NewProgram(model, tea.WithAltScreen())
 
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error: %v", err)
