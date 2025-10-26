@@ -14,8 +14,8 @@ github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f h1:Y/CXytFA4m6
 github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f/go.mod h1:vw97MGsxSvLiUE2X8qFplwetxpGLQrlU1Q9AUEIzCaM=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
-github.com/maraloon/datepicker v0.0.2 h1:lOScpOhHSaELdTpev5OKQcQEGc4YU5N5h0Y2RpxJnGA=
-github.com/maraloon/datepicker v0.0.2/go.mod h1:l4wMtoyyNqyaNTrF/wKilB3Zt7gX3vGV8VAhiZDMg30=
+github.com/maraloon/datepicker v0.0.3 h1:4Cvmzytg2iARNkdmFNYmUz3LYBWdxYIORCgOYpNLm30=
+github.com/maraloon/datepicker v0.0.3/go.mod h1:l4wMtoyyNqyaNTrF/wKilB3Zt7gX3vGV8VAhiZDMg30=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mattn/go-localereader v0.0.1 h1:ygSAOl7ZXTx4RdPYinUpg6W99U8jWvWi9Ye2JC/oIi4=

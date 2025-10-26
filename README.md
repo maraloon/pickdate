@@ -24,6 +24,8 @@ go install
 
 It's for what i develop this app. Terminal-based notes. Open (or create) file for selected date
 
+> After time i rewrite my bash scripts to one project: [tty-diary](https://github.com/maraloon/tty-diary), so if you want to diarize like me, check it
+
 ```bash
 #!/usr/bin/env sh
 prev_selected_date=$(date +"%Y/%m/%d")
@@ -86,39 +88,9 @@ String format: `color1:day1,day2;color2:day3,day31`
 example: `echo "#b16286:2025/08/10,2025/08/11;#d79920:2025/08/12" | pickdate`
 
 ## TODO
-
-- [x] Show today, style
-- [x] Help menu
-- [ ] Jumps
-    - [x] Jump to today
-    - [ ] Month jump
-        - [x] p, n
-        - [ ] m[1-12]<cr>
-    - [ ] Year jump
-        - [x] P, N
-        - [ ] y[1-12]<cr>
-    - [ ] Jump in line: 3l - 3 days later
-    - [ ] Jump n month up/down: 3ml/3m<down> - 3 month down
-    - [ ] Jump lines: 2j - 2 weeks later
-    - [ ] Jump to selected day: `d[1-31]`/`31g`/`31<cr>` will jump on 31th day of current month
-- [ ] Lists
-    - [ ] Month list (M)
-    - [ ] Year list (Y)
-- [ ] View
-    - [ ] Show 3 month view
-    - [ ] Show full year view
-    - [ ] Change colors via config
-- [ ] Toggle fullsceen (WithAltScreen)
-- [x] Center align
-- [ ] Toggle week start, monday or sunday
-- [ ] CLI opts
-    - [x] Week first day
-    - [x] Output date format
-    - [x] `--start-at date`
-    - [ ] Fullscreen
-- aur
     - [x] stable
     - [ ] git version
+    - [x] decoupling to bubble component
 
 ## Made with
 
